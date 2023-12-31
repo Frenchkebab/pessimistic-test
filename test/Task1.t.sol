@@ -1,8 +1,10 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.17;
 
+/*==================== Original Contract Code ====================*/
 contract Storage {
     uint64 public constant SCALE = 1e18;
-    
+
     function scale(uint64 a) external pure returns (uint256 result) {
         result = SCALE * a;
     }
@@ -10,17 +12,14 @@ contract Storage {
 
 contract StorageUint256 {
     uint256 public constant SCALE = 1e18;
-    
+
     function scale(uint256 a) external pure returns (uint256 result) {
         result = SCALE * a;
     }
 }
 
-
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.17;
-
-import {Test, console2} from "forge-std/Test.sol";
+/*========================= Test Code =========================*/
+import {Test, console} from "forge-std/Test.sol";
 
 contract Task1Test is Test {
     Storage storage_;
@@ -36,7 +35,7 @@ contract Task1Test is Test {
         uint64 a = 18;
 
         // The maximum value of a that does not revert is 18
-        console2.log("a: ", a);
+        console.log("a: ", a);
         uint256 result = storage_.scale(a);
         assertEq(result, scale * a, "scale is not correct");
     }
@@ -45,24 +44,24 @@ contract Task1Test is Test {
         uint64 a = 19;
 
         // The minimum value of "a" that reverts by overflow is 19
-        console2.log("a: ", a); 
+        console.log("a: ", a);
         vm.expectRevert();
         storage_.scale(a);
     }
 
     function testStorageUint256() public {
-        console2.log("type(uint256).max: ", type(uint256).max);
-        console2.log("\t\t = 1.15792... * 10^77");
-        console2.log("\n");
+        console.log("type(uint256).max: ", type(uint256).max);
+        console.log("\t\t = 1.15792... * 10^77");
+        console.log("\n");
 
         uint256 maxA = type(uint256).max / storageUint256_.SCALE();
-        console2.log("maximum value of A that does not overflow: ", maxA);
-        console2.log("\t\t = 1.15792... * 10^(77-18)");
-        console2.log("\n");
+        console.log("maximum value of A that does not overflow: ", maxA);
+        console.log("\t\t = 1.15792... * 10^(77-18)");
+        console.log("\n");
 
         uint256 result = storageUint256_.scale(maxA);
-        console2.log("type(uint256).max : ", type(uint256).max);
-        console2.log("result (a * SCALE): ", result);
+        console.log("type(uint256).max : ", type(uint256).max);
+        console.log("result (a * SCALE): ", result);
 
         vm.expectRevert();
         storageUint256_.scale(maxA + 1);
